@@ -71,4 +71,18 @@ npm run dev
 Local:   http://localhost:5173/
 ```
 
+## Pasos para agregar las imágenes de la bd de forma local
+
+### 1. Abrir la terminal y situarse en la carpeta backend 
+
+### 2. Ejecutar el siguiente comando:
+
+```bash
+node uploadImages.js
+```
+
+### 3. Prestar atención a los mensajes de exito o error
+
+### 4. Verificar en los esquemas de tablas de pgAdmin4 que tos las columnas estén correctamente llenadas con un formato tipo: \x...
+
 ---
