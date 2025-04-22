@@ -83,6 +83,6 @@ node uploadImages.js
 
 ### 3. Prestar atención a los mensajes de exito o error
 
-### 4. Verificar en los esquemas de tablas de pgAdmin4 que tos las columnas estén correctamente llenadas con un formato tipo: \x...
+### 4. Verificar en los esquemas de tablas de pgAdmin4 que todas las columnas se hayan llenado correctamente con un formato tipo: \x...
 
 ---
