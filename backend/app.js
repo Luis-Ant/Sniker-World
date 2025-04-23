@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
