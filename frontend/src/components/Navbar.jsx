@@ -1,12 +1,13 @@
 import React from "react";
 import carritoIcono from "../assets/images/carrito.png";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
     <div className="w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg">
-      <div className="px-2 flex justify-between items-center w-full h-full">
+      <div className="px-4 flex justify-between items-center w-full h-full">
         <div className="w-full flex items-center">
-          <h1 className="text-3xl font-bold mr-4 sm:text-4xl">Sniker World</h1>
+          <h1 className="text-3xl w-1/3 font-bold mr-4 sm:text-4xl">Sniker World</h1>
 
             {/* Buscador visible solo en pantallas medianas hacia arriba */}
             <div className="hidden md:flex w-1/3 min-w-[250px] mx-10 justify-center items-center">
@@ -17,7 +18,7 @@ const Navbar = () => {
                 />
             </div>
 
-            <div className="flex items-center justify-end w-1/3 space-x-6">
+            <div className="flex items-center justify-end w-1/3 px-6 space-x-6">
                 {/* Botones de Iniciar sesión y Registrarse */}
                 <div className="flex items-center space-x-6">
                     <button className="text-gray-800 hover:text-sky-400 transition-all duration-300">
@@ -30,7 +31,7 @@ const Navbar = () => {
 
                 {/* Icono de carrito */}
                 <div className="flex items-center justify-center">
-                    <button className="relative">
+                    <Link to="/carrito" className="relative">
                         <img
                         src={carritoIcono}
                         alt="Carrito de compras"
@@ -40,7 +41,7 @@ const Navbar = () => {
                         <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                         3 {/* Aquí puedes reemplazar el 3 por el estado dinámico */}
                         </span>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>
