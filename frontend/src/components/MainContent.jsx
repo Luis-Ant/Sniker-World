@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api'; // Import the API client
+import { useNavigate } from 'react-router-dom'; // Add this import
+import api from '../api';
 
 const MainContent = () => {
+  const navigate = useNavigate(); // Add this hook
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +11,7 @@ const MainContent = () => {
   useEffect(() => {
     const fetchSneakers = async () => {
       try {
-        const response = await api.get('/sneakers'); // Fetch all sneakers
+        const response = await api.get('/sneakers');
         setProducts(response.data);
         setLoading(false);
       } catch (err) {
@@ -35,7 +37,7 @@ const MainContent = () => {
         <button
           key={product.id_snkr}
           className="flex flex-col items-center bg-[#bb8a9d] p-4 rounded-lg shadow-lg hover:scale-105 transition-all duration-300"
-          onClick={() => console.log(`Producto seleccionado: ${product.modelo_snkr}`)}
+          onClick={() => navigate(`/sneaker/${product.id_snkr}`)} // Updated to navigate
         >
           {product.imagen_snkr ? (
             <img
