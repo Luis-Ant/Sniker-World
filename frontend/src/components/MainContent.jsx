@@ -1,5 +1,6 @@
 import React from 'react';
 import carritoIcono from "../assets/images/carrito.png";
+import { Link } from 'react-router-dom';
 
 // Array de ejemplo con información de los tenis
 const products = [
@@ -19,7 +20,7 @@ const MainContent = () => {
   return (
     <div className="w-full p-8 pt-[120px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {products.map((product) => (
-        <button
+        <Link to="/details"
           key={product.id}
           className="flex flex-col items-center bg-[#bb8a9d] p-4 rounded-lg shadow-lg hover:scale-105 transition-all duration-300"
           onClick={() => console.log(`Producto seleccionado: ${product.model}`)} // Aquí agregarás la lógica para ir a la vista de detalles
@@ -32,7 +33,7 @@ const MainContent = () => {
           <h2 className="text-white text-xl font-semibold mb-2">{product.model}</h2>
           <p className="text-white text-lg mb-2">{product.brand}</p>
           <p className="text-white text-lg font-bold">${product.price}</p>
-        </button>
+        </Link>
       ))}
     </div>
   );
