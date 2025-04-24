@@ -15,16 +15,16 @@ const Navbar = () => {
         <div className="hidden md:flex justify-center flex-1">
           <input
             type="text"
-            placeholder="Buscar..."
+            placeholder="Buscar por modelo..."
             className="w-full max-w-md px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
           />
         </div>
 
         {/* Controles de usuario y carrito */}
         <div className="flex-1 min-w-[150px] flex justify-end items-center space-x-4">
-          <button className="text-gray-800 hover:text-sky-400 transition-all duration-300">
+          <Link to="/login" className="text-gray-800 hover:text-sky-400 transition-all duration-300">
             Iniciar sesión
-          </button>
+          </Link>
           <button className="text-gray-800 hover:text-sky-400 transition-all duration-300">
             Registrarse
           </button>
