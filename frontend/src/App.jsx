@@ -1,16 +1,17 @@
-import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import MainContent from "./components/MainContent";
+import ShoppingCart from "./components/ShoppingCart";
 
 function App() {
   return (
-    <div className="bg-gray-100 p-4 rounded-md shadow-md">
-      <h2 className="text-xl font-bold text-blue-600">¡Hola desde React!</h2>
-      <p className="text-gray-700">
-        Este es un componente con estilos de Tailwind CSS.
-      </p>
-      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-        Haz clic aquí
-      </button>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<MainContent />} />
+        <Route path="/carrito" element={<ShoppingCart />} />
+      </Routes>
+    </Router>
   );
 }
 
