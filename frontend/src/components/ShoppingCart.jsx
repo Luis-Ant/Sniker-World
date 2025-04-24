@@ -1,6 +1,6 @@
 import React from "react";
 import { Trash2, Minus, Plus, ArrowLeft } from "lucide-react";
-
+import { Link } from 'react-router-dom';
 const productos = [
   {
     id: 1,
@@ -38,7 +38,9 @@ export default function CarritoCompra() {
   return (
     <div className="min-h-screen pt-[80px] bg-white flex flex-col">
       <header className="border-b border-black p-4 flex items-center gap-4 text-xl font-bold tracking-wider">
-        <ArrowLeft className="cursor-pointer" />
+      <Link to="/">
+          <ArrowLeft className="cursor-pointer hover:text-sky-500 transition-all duration-300" />
+      </Link>
         <span>MI CARRITO</span>
       </header>
 
