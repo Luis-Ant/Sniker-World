@@ -11,14 +11,7 @@ const Navbar = () => {
           <h1 className="text-2xl sm:text-3xl font-bold">Sniker World</h1>
         </div>
 
-        {/* Buscador: centrado y oculto en móvil */}
-        <div className="hidden md:flex justify-center flex-1">
-          <input
-            type="text"
-            placeholder="Buscar por modelo..."
-            className="w-full max-w-md px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
-          />
-        </div>
+      
 
         {/* Controles de usuario y carrito */}
         <div className="flex-1 min-w-[150px] flex justify-end items-center space-x-4">
