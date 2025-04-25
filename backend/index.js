@@ -2,6 +2,9 @@ import express from 'express';
 import pkg from 'pg';
 import cors from 'cors';
 
+import emailHelper from './helpers/emailHelper.js';
+
+
 const { Pool } = pkg;
 const app = express();
 
@@ -43,6 +46,18 @@ app.get('/api/sneakers/:id', async (req, res) => {
   } catch (err) {
     console.error(err.stack);
     res.status(500).json({ error: 'Error fetching sneaker' });
+  }
+});
+
+
+app.post("/send-email", async (req, res) => {
+  const { to, subject, text } = req.body;
+
+  try {
+    let info = await emailHelper(to, subject, text);
+    res.status(200).send(`Email sent: ${info.response}`);
+  } catch (error) {
+    res.status(500).send("Error sending email");
   }
 });
 
