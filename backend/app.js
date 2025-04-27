@@ -1,7 +1,12 @@
 import dotenv from "dotenv";
 import express from "express";
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import authRoutes from "./routes/authRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
@@ -22,6 +27,15 @@ app.use(express.json());
 
 // Middleware para parsear cookies
 app.use(cookieParser());
+
+// Rutas de autenticacion.
+app.use("/auth", authRoutes);
+// Rutas de productos.
+app.use("/product", productRoutes);
+// Rutas del carrito.
+app.use("/cart", cartRoutes);
+// Rutas para finalizar la compra.
+app.use("/order", orderRoutes);
 
 // Ruta principal
 app.get("/", (req, res) => {

@@ -1,53 +1,216 @@
-import React from "react";
-import carritoIcono from "../assets/images/carrito.png";
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/appContext.jsx";
+import CartSidebar from "./CartSidebar";
+import SearchResults from "./SearchResults";
+import { FiSearch } from "react-icons/fi";
+import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 
-const Navbar = () => {
+const DEBOUNCE_DELAY = 300; // Milisegundos para el debounce
+
+export default function Navbar() {
+  const {
+    cart,
+    logout,
+    isAuthenticated,
+    handleSearch,
+    searchQuery: contextSearchQuery,
+    searchResults,
+    searchLoading,
+  } = useAppContext();
+  const [isCarritoOpen, setIsCarritoOpen] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState(contextSearchQuery); // Estado local para el input
+  const navigate = useNavigate();
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    setLocalSearchQuery(contextSearchQuery); // Sincronizar el estado local con el del contexto
+  }, [contextSearchQuery]);
+
+  const toggleCarrito = () => {
+    if (isAuthenticated) {
+      setIsCarritoOpen(!isCarritoOpen);
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    const newQuery = event.target.value;
+    setLocalSearchQuery(newQuery);
+
+    // Debounce the search
+    clearTimeout(searchInputRef.current);
+    searchInputRef.current = setTimeout(() => {
+      handleSearch(newQuery);
+    }, DEBOUNCE_DELAY);
+  };
+
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true);
+  };
+
+  const handleSearchBlur = () => {
+    // Small delay to allow clicks on search results
+    setTimeout(() => {
+      setIsSearchFocused(false);
+    }, 150);
+  };
+
+  const clearSearch = () => {
+    setLocalSearchQuery("");
+    handleSearch(""); // Limpiar resultados llamando a la función del contexto
+    setIsSearchFocused(false);
+  };
+
+  const contador = cart
+    ? cart.reduce((sum, i) => sum + (i.cantidad || 1), 0)
+    : 0;
+
   return (
-    <div className="w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg">
-      <div className="px-4 flex justify-between items-center w-full h-full">
-        <div className="w-full flex items-center">
-          <h1 className="text-3xl w-1/3 font-bold mr-4 sm:text-4xl">Sniker World</h1>
+    <>
+      <nav className="w-full px-4 py-2 border-b bg-white flex items-center sticky top-0 z-10">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex-1">
+            <Link to="/" className="block w-56 h-auto">
+              <h1 className="text-4xl md:text-6xl font-bold w-3xl h-auto">
+                Sniker World
+              </h1>
+            </Link>
+          </div>
 
-            {/* Buscador visible solo en pantallas medianas hacia arriba */}
-            <div className="hidden md:flex w-1/3 min-w-[250px] mx-10 justify-center items-center">
-                <input
-                    type="text"
-                    placeholder="Buscar..."
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
-                />
-            </div>
-
-            <div className="flex items-center justify-end w-1/3 px-6 space-x-6">
-                {/* Botones de Iniciar sesión y Registrarse */}
-                <div className="flex items-center space-x-6">
-                    <button className="text-gray-800 hover:text-sky-400 transition-all duration-300">
-                        Iniciar sesión
-                    </button>
-                    <button className="text-gray-800 hover:text-sky-400 transition-all duration-300">
-                        Registrarse
-                    </button>
+          {/* Buscador */}
+          <div className="flex-1 justify-center hidden md:flex">
+            <div className="relative w-full max-w-md">
+              <input
+                type="text"
+                placeholder="Buscar..."
+                className="w-full px-4 py-2 text-lg border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+                value={localSearchQuery}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
+                onBlur={handleSearchBlur}
+              />
+              {localSearchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <FiSearch className="h-5 w-5" />
+                </button>
+              )}
+              {isSearchFocused && localSearchQuery && searchLoading && (
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 z-20 overflow-hidden p-4 text-gray-600">
+                  Buscando...
                 </div>
-
-                {/* Icono de carrito */}
-                <div className="flex items-center justify-center">
-                    <Link to="/carrito" className="relative">
-                        <img
-                        src={carritoIcono}
-                        alt="Carrito de compras"
-                        className="w-8 h-8 cursor-pointer hover:opacity-80 transition-all duration-300"
-                        />
-                        {/* Si quieres agregar un contador de productos en el carrito */}
-                        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                        3 {/* Aquí puedes reemplazar el 3 por el estado dinámico */}
-                        </span>
-                    </Link>
-                </div>
+              )}
+              {isSearchFocused &&
+                localSearchQuery &&
+                !searchLoading &&
+                searchResults.length > 0 && (
+                  <SearchResults
+                    results={searchResults}
+                    onClose={clearSearch}
+                  />
+                )}
+              {isSearchFocused &&
+                localSearchQuery &&
+                !searchLoading &&
+                searchResults.length === 0 && (
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 z-20 overflow-hidden p-4 text-gray-600">
+                    No se encontraron resultados.
+                  </div>
+                )}
             </div>
+          </div>
+
+          {/* Botones + Carrito */}
+          <div className="flex text-lg mr-3 items-center justify-end flex-1 space-x-4 md:space-x-6">
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  className="text-gray-800 hover:text-sky-400 transition"
+                >
+                  Iniciar sesión
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-gray-800 hover:text-sky-400 transition"
+                >
+                  Registrarse
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={logout}
+                className="text-gray-800 hover:text-sky-400 transition"
+              >
+                Cerrar Sesión
+              </button>
+            )}
+            <button onClick={toggleCarrito} className="relative">
+              <ShoppingCartIcon className="w-7 h-7 md:w-8 md:h-8 hover:opacity-50 transition cursor-pointer" />
+              {contador > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {contador}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
-  );
-};
 
-export default Navbar;
+        {/* Barra de búsqueda visible en pantallas pequeñas */}
+        <div className="md:hidden w-full py-2 px-4">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Buscar..."
+              className="w-full px-4 py-2 text-lg border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+              value={localSearchQuery}
+              onChange={handleSearchChange}
+              onFocus={handleSearchFocus}
+              onBlur={handleSearchBlur}
+            />
+            {localSearchQuery && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <FiSearch className="h-5 w-5" />
+              </button>
+            )}
+            {isSearchFocused && localSearchQuery && searchLoading && (
+              <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 z-20 overflow-hidden p-4 text-gray-600">
+                Buscando...
+              </div>
+            )}
+            {isSearchFocused &&
+              localSearchQuery &&
+              !searchLoading &&
+              searchResults.length > 0 && (
+                <SearchResults results={searchResults} onClose={clearSearch} />
+              )}
+            {isSearchFocused &&
+              localSearchQuery &&
+              !searchLoading &&
+              searchResults.length === 0 && (
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 z-20 overflow-hidden p-4 text-gray-600">
+                  No se encontraron resultados.
+                </div>
+              )}
+          </div>
+        </div>
+      </nav>
+
+      {/* Sidebar Carrito */}
+      {isCarritoOpen && (
+        <CartSidebar
+          isOpen={isCarritoOpen}
+          onClose={() => setIsCarritoOpen(false)}
+        />
+      )}
+    </>
+  );
+}

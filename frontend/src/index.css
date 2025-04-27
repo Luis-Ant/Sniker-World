@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+  --font-jersey: "Jersey 15", sans-serif;
+}
+
+@layer base {
+  html,
+  body,
+  * {
+    font-family: var(--font-jersey);
+  }
+}

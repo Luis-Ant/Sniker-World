@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factura de Pedido #<%= pedido.id_pedido %> - Sniker World</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 20px;
+      }
+      .logo {
+        font-size: 2em;
+        color: #007bff;
+        font-weight: bold;
+      }
+      .invoice-info {
+        text-align: right;
+      }
+      .invoice-info p {
+        margin: 5px 0;
+        font-size: 0.9em;
+        color: #777;
+      }
+      .customer-info {
+        margin-bottom: 30px;
+      }
+      .customer-info h3 {
+        color: #007bff;
+        margin-bottom: 10px;
+      }
+      .customer-info p {
+        margin: 5px 0;
+        font-size: 0.95em;
+      }
+      .order-details {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+      .order-details th,
+      .order-details td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      .order-details th {
+        background-color: #f9f9f9;
+        font-weight: bold;
+      }
+      .order-details tbody tr:last-child td {
+        border-bottom: 2px solid #ddd;
+      }
+      .total-section {
+        text-align: right;
+        margin-top: 20px;
+      }
+      .total-section p {
+        margin: 5px 0;
+        font-size: 1em;
+      }
+      .total-section .total-amount {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #777;
+        font-size: 0.8em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="invoice-header">
+        <div class="logo">Sniker World</div>
+        <div class="invoice-info">
+          <h2>Factura</h2>
+          <p><strong>Número de Factura:</strong> <%= pedido.id_pedido %></p>
+          <p><strong>Fecha:</strong> <%= pedido.fecha_pedido %></p>
+        </div>
+      </div>
+
+      <div class="customer-info">
+        <h3>Información del Cliente</h3>
+        <p>
+          <strong>Nombre:</strong> <%= usuario.nombre_usr %> <%=
+          usuario.apellido_usr %>
+        </p>
+        <p><strong>Correo Electrónico:</strong> <%= usuario.correo_usr %></p>
+        <% if (usuario.direccion_usr) { %>
+        <p><strong>Dirección:</strong> <%= usuario.direccion_usr %></p>
+        <% } else { %>
+        <p><strong>Dirección:</strong> No proporcionada</p>
+        <% } %>
+      </div>
+
+      <h2>Detalles del Pedido</h2>
+      <table class="order-details">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Talla</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% pedido.detalles.forEach(item => { %>
+          <tr>
+            <td><%= item.modelo_snkr %></td>
+            <td><%= item.talla %></td>
+            <td><%= item.cantidad %></td>
+            <td>$<%= item.precio.toFixed(2) %></td>
+            <td>$<%= item.subtotal_item %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+
+      <div class="total-section">
+        <p>
+          <strong>Subtotal:</strong> $<%= pedido.detalles.reduce((sum, item) =>
+          sum + parseFloat(item.subtotal_item), 0).toFixed(2) %>
+        </p>
+        <% if (pedido.costo_envio && parseFloat(pedido.costo_envio) > 0) { %>
+        <p>
+          <strong>Costo de Envío:</strong> $<%=
+          parseFloat(pedido.costo_envio).toFixed(2) %>
+        </p>
+        <% } %>
+        <p class="total-amount">
+          <strong>Total:</strong> $<%= pedido.total_pedido %>
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>Gracias por tu compra en Sniker World.</p>
+        <p>
+          Si tienes alguna pregunta, contáctanos a través de [tu correo de
+          soporte] o visita [tu sitio web].
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
