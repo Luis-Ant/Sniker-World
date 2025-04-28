@@ -69,7 +69,8 @@ export const AppProvider = ({ children }) => {
   const login = async (email, password) => {
     setAuthLoading(true);
     try {
-      const userData = await authService.login(email, password);
+      await authService.login(email, password);
+      const userData = await authService.verifyToken();
       setUser(userData);
       setIsAuthenticated(true);
       setAuthLoading(false);
@@ -186,7 +187,7 @@ export const AppProvider = ({ children }) => {
   const performCheckout = async () => {
     console.log(isAuthenticated);
     console.log(user);
-    if (!isAuthenticated || !user?.decoded?.id_usr) {
+    if (!isAuthenticated || !user.decoded.id_usr) {
       throw new Error("Usuario no autenticado.");
     }
 

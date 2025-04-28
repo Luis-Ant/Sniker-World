@@ -12,7 +12,6 @@ function CartPage() {
     products,
     updateCartItemQuantity,
     removeFromCart,
-    clearCart,
     performCheckout,
   } = useAppContext();
   const navigate = useNavigate();
