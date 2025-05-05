@@ -5,6 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "url";
 import db from "../config/database.js"; // Importa el objeto 'db'
+import { or } from "sequelize";
 
 const { Pedido, PedidoSneaker, Usuario, Sneaker } = db; // Accede a los modelos directamente desde 'db'
 
@@ -153,6 +154,28 @@ const orderService = {
     } catch (error) {
       console.error("Error al enviar la factura por correo:", error);
       return false;
+    }
+  },
+
+  async obtenerPedidosPorUsuario(usuarioId) {
+    try {
+      const pedidos = await Pedido.findAll({
+        where: { id_usr: usuarioId },
+        order: [["fecha_pedido", "DESC"]],
+        include: [
+          {
+            model: Sneaker,
+            through: {
+              model: PedidoSneaker,
+              attributes: ["talla_ps", "cantidad_ps"],
+            },
+          },
+        ],
+      });
+      return pedidos;
+    } catch (error) {
+      console.error("Error al obtener los pedidos:", error);
+      throw error;
     }
   },
 };

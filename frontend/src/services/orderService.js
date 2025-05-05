@@ -13,3 +13,13 @@ export const checkout = async (orderData) => {
     throw error;
   }
 };
+
+export const obtenerPedidos = async () => {
+  try {
+    const response = await axiosInstance.get(`/order/pedidos`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los pedidos:", error);
+    throw error;
+  }
+};

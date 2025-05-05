@@ -12,6 +12,7 @@ import CartPage from "./pages/CartPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import OrdenProcesoPage from "./pages/OrdenProcesoPage.jsx";
+import PedidosPage from "./pages/PedidosPage.jsx";
 
 function App() {
   const { isAuthenticated, authLoading } = useAppContext();
@@ -67,6 +68,7 @@ function App() {
             </PublicRoute>
           }
         />
+        <Route path="/pedidos" element={<PedidosPage />} />
         <Route path="*" element={<div>Página no encontrada</div>} />
       </Routes>
     </Router>

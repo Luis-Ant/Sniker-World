@@ -3,7 +3,7 @@ import orderService from "../services/orderservice.js";
 
 const orderController = {
   async finalizarCompra(req, res) {
-    const { usuarioId, carritoItems, totalPedido, costoEnvio } = req.body; // Incluye costoEnvio si lo envías
+    const { usuarioId, carritoItems, totalPedido, costoEnvio } = req.body;
 
     try {
       const resultado = await orderService.registrarPedidoYEnviarFactura(
@@ -32,6 +32,19 @@ const orderController = {
       res.status(500).json({
         error:
           error.message || "Error interno del servidor al finalizar la compra.",
+      });
+    }
+  },
+
+  async obtenerPedidos(req, res) {
+    const usuarioId = req.user.id_usr;
+    try {
+      const pedidos = await orderService.obtenerPedidosPorUsuario(usuarioId);
+      res.status(200).json(pedidos);
+    } catch (error) {
+      console.error("Error al obtener los pedidos:", error);
+      res.status(500).json({
+        error: "Error interno del servidor al obtener los pedidos.",
       });
     }
   },

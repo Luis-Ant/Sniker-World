@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/appContext.jsx";
 import CartSidebar from "./CartSidebar";
 import SearchResults from "./SearchResults";
+import UserMenu from "./UserMenu"; // Importa el nuevo componente UserMenu
 import { FiSearch } from "react-icons/fi";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 
@@ -13,6 +14,7 @@ export default function Navbar() {
     cart,
     logout,
     isAuthenticated,
+    user,
     handleSearch,
     searchQuery: contextSearchQuery,
     searchResults,
@@ -21,8 +23,10 @@ export default function Navbar() {
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState(contextSearchQuery); // Estado local para el input
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // Estado para controlar el menú de usuario
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
+  const userButtonRef = useRef(null); // Referencia al botón de usuario
 
   useEffect(() => {
     setLocalSearchQuery(contextSearchQuery); // Sincronizar el estado local con el del contexto
@@ -63,6 +67,28 @@ export default function Navbar() {
     handleSearch(""); // Limpiar resultados llamando a la función del contexto
     setIsSearchFocused(false);
   };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
+  // Cerrar el menú de usuario si se hace clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        userButtonRef.current &&
+        !userButtonRef.current.contains(event.target) &&
+        isUserMenuOpen
+      ) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
 
   const contador = cart
     ? cart.reduce((sum, i) => sum + (i.cantidad || 1), 0)
@@ -128,28 +154,43 @@ export default function Navbar() {
           {/* Botones + Carrito */}
           <div className="flex text-lg mr-3 items-center justify-end flex-1 space-x-4 md:space-x-6">
             {!isAuthenticated ? (
-              <>
-                <Link
-                  to="/login"
-                  className="text-gray-800 hover:text-sky-400 transition"
-                >
-                  Iniciar sesión
-                </Link>
-                <Link
-                  to="/register"
-                  className="text-gray-800 hover:text-sky-400 transition"
-                >
-                  Registrarse
-                </Link>
-              </>
-            ) : (
-              <button
-                onClick={logout}
+              <Link
+                to="/login"
                 className="text-gray-800 hover:text-sky-400 transition"
               >
-                Cerrar Sesión
-              </button>
+                Iniciar sesión
+              </Link>
+            ) : (
+              <div className="relative" ref={userButtonRef}>
+                <button
+                  onClick={toggleUserMenu}
+                  className="focus:outline-none hover:opacity-50 transition cursor-pointer"
+                >
+                  <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                    <svg
+                      className="absolute w-12 h-12 text-gray-400 -left-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+                </button>
+                {isUserMenuOpen && user?.decoded?.nombre_usr && (
+                  <UserMenu
+                    username={user.decoded.nombre_usr}
+                    onLogout={logout}
+                    onClose={toggleUserMenu}
+                  />
+                )}
+              </div>
             )}
+            <div className="h-6 w-0.5 bg-gray-300 dark:bg-gray-600 mx-2" />
             <button onClick={toggleCarrito} className="relative">
               <ShoppingCartIcon className="w-7 h-7 md:w-8 md:h-8 hover:opacity-50 transition cursor-pointer" />
               {contador > 0 && (
