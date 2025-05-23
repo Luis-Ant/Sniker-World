@@ -21,6 +21,11 @@ function OrdenProcesoPage() {
   );
   const [fechaEntregaEstimada, setFechaEntregaEstimada] = useState("");
 
+  // Efecto para hacer scroll al inicio cuando el componente se monte
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const diasParaEntrega = Math.floor(Math.random() * 3) + 3;
     const fecha = dayjs().add(diasParaEntrega, "day");

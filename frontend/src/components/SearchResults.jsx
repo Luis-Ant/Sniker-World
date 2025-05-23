@@ -5,7 +5,7 @@ const SearchResults = ({ results, onClose }) => {
   const firstTenResults = results.slice(0, 10);
 
   return (
-    <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 z-20 overflow-hidden">
+    <div className="w-full bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden">
       {firstTenResults.length > 0 ? (
         <ul>
           {firstTenResults.map((product) => (
